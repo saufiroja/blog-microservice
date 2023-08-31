@@ -10,3 +10,4 @@ Implementation Microservice in Golang
 - MongoDB
 - Redis
 - Apache Kafka / RabbitMQ
+- NGINX

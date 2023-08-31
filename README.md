@@ -6,7 +6,7 @@ Implementation Microservice in Golang
 - gRPC
 - Docker
 - Kubernetes (optional)
-- Postgresql
+- PostgreSQL
 - MongoDB
 - Redis
 - Apache Kafka / RabbitMQ

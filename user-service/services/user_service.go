@@ -3,6 +3,7 @@ package services
 import (
 	"math"
 
+	"github.com/google/uuid"
 	"github.com/saufiroja/blog-microservice/user-service/interfaces"
 	"github.com/saufiroja/blog-microservice/user-service/models/dto"
 )
@@ -33,4 +34,14 @@ func (s *UserService) FindAllUsers(pagination *dto.Pagination) ([]dto.FindAllUse
 	}
 
 	return users, pagination, nil
+}
+
+func (s *UserService) InsertUser(user *dto.InsertUserDTO) error {
+	user.ID = uuid.New().String()
+	err := s.userRepo.InsertUser(user)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

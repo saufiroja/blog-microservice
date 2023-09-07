@@ -5,6 +5,7 @@ import (
 
 	"github.com/saufiroja/blog-microservice/user-service/infrastructures/grpc/rpc/pb/user"
 	"github.com/saufiroja/blog-microservice/user-service/interfaces"
+	"github.com/saufiroja/blog-microservice/user-service/models/dto"
 	"github.com/saufiroja/blog-microservice/user-service/utils"
 )
 
@@ -55,6 +56,31 @@ func (h *UserHandler) FindAllUsers(ctx context.Context, req *user.PaginationRequ
 		Message:    "success find all users",
 		Pagination: paginationRes,
 		Result:     usersRes,
+	}
+
+	return &res, nil
+}
+
+func (h *UserHandler) InsertUser(ctx context.Context, req *user.InsertUserDTO) (*user.InsertUserResponse, error) {
+	// convert request
+	userReq := &dto.InsertUserDTO{
+		Name:      req.Name,
+		Email:     req.Email,
+		Password:  req.Password,
+		CreatedAt: req.CreatedAt,
+		UpdatedAt: req.UpdatedAt,
+	}
+
+	// call service
+	err := h.userService.InsertUser(userReq)
+	if err != nil {
+		return nil, err
+	}
+
+	// send response
+	res := user.InsertUserResponse{
+		Code:    201,
+		Message: "success insert user",
 	}
 
 	return &res, nil

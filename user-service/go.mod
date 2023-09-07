@@ -3,6 +3,7 @@ module github.com/saufiroja/blog-microservice/user-service
 go 1.21.0
 
 require (
+	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
 	golang.org/x/text v0.9.0

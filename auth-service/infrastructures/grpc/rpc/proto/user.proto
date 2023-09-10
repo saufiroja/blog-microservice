@@ -6,11 +6,34 @@ option go_package = "./user";
 
 service UserService {
     rpc FindAllUsers(PaginationRequest) returns (FindAllUsersResponse);
-    rpc InsertUser(InsertUserDTO) returns (InsertUserResponse);
-    rpc FindUsersByEmail(FindUsersByEmailRequest) returns (FindUsersByEmailResponse);
+    rpc InsertUser(InsertUserDTO) returns (UserResponse);
+    rpc FindUsersByEmail(FindUsersByEmailRequest) returns (FindUsersResponse);
+    rpc FindUsersByID (FindUsersByIDRequest) returns (FindUsersResponse);
+    rpc UpdateUser (UpdateUserRequest) returns (UserResponse);
+    rpc DeleteUser (DeleteUserRequest) returns (UserResponse);
 }
 
-// find all users
+message FindUsersDTO {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    string password = 4;
+    int32 created_at = 5;
+}
+
+message FindUsersResponse {
+    int32 code = 1;
+    string message = 2;
+    FindUsersDTO result = 3;
+}
+
+message UserResponse {
+    int32 code = 1;
+    string message = 2;
+}
+
+
+// pagination
 message Pagination {
     int32 total_data = 1;
     int32 total_page = 2;
@@ -24,6 +47,7 @@ message PaginationRequest {
     int32 limit = 2;
 }
 
+// find all users
 message FindAllUsersDTO{
     string id = 1;
     string name = 2;
@@ -48,26 +72,27 @@ message InsertUserDTO {
     int32 updated_at = 6;
 }
 
-message InsertUserResponse {
-    int32 code = 1;
-    string message = 2;
-}
-
 // find users by email
 message FindUsersByEmailRequest {
     string email = 1;
 }
 
-message FindUsersByEmailDTO {
+// find users by id
+message FindUsersByIDRequest {
+    string id = 1;
+}
+
+
+// update user
+message UpdateUserRequest {
     string id = 1;
     string name = 2;
     string email = 3;
     string password = 4;
-    int32 created_at = 5;
+    int32 updated_at = 5;
 }
 
-message FindUsersByEmailResponse {
-    int32 code = 1;
-    string message = 2;
-    FindUsersByEmailDTO result = 3;
+// delete user
+message DeleteUserRequest {
+    string id = 1;
 }

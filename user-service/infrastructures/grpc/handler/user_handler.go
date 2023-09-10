@@ -61,7 +61,7 @@ func (h *UserHandler) FindAllUsers(ctx context.Context, req *pb.PaginationReques
 	return &res, nil
 }
 
-func (h *UserHandler) InsertUser(ctx context.Context, req *pb.InsertUserDTO) (*pb.InsertUserResponse, error) {
+func (h *UserHandler) InsertUser(ctx context.Context, req *pb.InsertUserDTO) (*pb.UserResponse, error) {
 	// convert request
 	userReq := &dto.InsertUserDTO{
 		Name:      req.Name,
@@ -78,7 +78,7 @@ func (h *UserHandler) InsertUser(ctx context.Context, req *pb.InsertUserDTO) (*p
 	}
 
 	// send response
-	res := pb.InsertUserResponse{
+	res := pb.UserResponse{
 		Code:    201,
 		Message: "success insert user",
 	}
@@ -86,7 +86,7 @@ func (h *UserHandler) InsertUser(ctx context.Context, req *pb.InsertUserDTO) (*p
 	return &res, nil
 }
 
-func (h *UserHandler) FindUsersByEmail(ctx context.Context, req *pb.FindUsersByEmailRequest) (*pb.FindUsersByEmailResponse, error) {
+func (h *UserHandler) FindUsersByEmail(ctx context.Context, req *pb.FindUsersByEmailRequest) (*pb.FindUsersResponse, error) {
 	// call service
 	user, err := h.userService.FindUsersByEmail(req.Email)
 	if err != nil {
@@ -94,7 +94,7 @@ func (h *UserHandler) FindUsersByEmail(ctx context.Context, req *pb.FindUsersByE
 	}
 
 	// convert response
-	userRes := &pb.FindUsersByEmailDTO{
+	userRes := &pb.FindUsersDTO{
 		Id:        user.ID,
 		Name:      user.Name,
 		Email:     user.Email,
@@ -103,10 +103,74 @@ func (h *UserHandler) FindUsersByEmail(ctx context.Context, req *pb.FindUsersByE
 	}
 
 	// send response
-	res := pb.FindUsersByEmailResponse{
+	res := pb.FindUsersResponse{
 		Code:    200,
 		Message: "success find user by email",
 		Result:  userRes,
+	}
+
+	return &res, nil
+}
+
+func (h *UserHandler) FindUsersByID(ctx context.Context, req *pb.FindUsersByIDRequest) (*pb.FindUsersResponse, error) {
+	// call service
+	user, err := h.userService.FindUsersByID(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	// convert response
+	userRes := &pb.FindUsersDTO{
+		Id:        user.ID,
+		Name:      user.Name,
+		Email:     user.Email,
+		CreatedAt: user.CreatedAt,
+	}
+
+	// send response
+	res := pb.FindUsersResponse{
+		Code:    200,
+		Message: "success find user by id",
+		Result:  userRes,
+	}
+
+	return &res, nil
+}
+
+func (h *UserHandler) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UserResponse, error) {
+	// convert request
+	userReq := &dto.UpdateUserDTO{
+		Name:      req.Name,
+		Email:     req.Email,
+		UpdatedAt: req.UpdatedAt,
+	}
+
+	// call service
+	err := h.userService.UpdateUser(req.Id, userReq)
+	if err != nil {
+		return nil, err
+	}
+
+	// send response
+	res := pb.UserResponse{
+		Code:    200,
+		Message: "success update user",
+	}
+
+	return &res, nil
+}
+
+func (h *UserHandler) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.UserResponse, error) {
+	// call service
+	err := h.userService.DeleteUser(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	// send response
+	res := pb.UserResponse{
+		Code:    200,
+		Message: "success delete user",
 	}
 
 	return &res, nil

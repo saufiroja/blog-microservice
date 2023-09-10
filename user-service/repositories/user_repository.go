@@ -107,11 +107,11 @@ func (r *userRepository) InsertUser(user *dto.InsertUserDTO) error {
 	return tx.Commit()
 }
 
-func (r *userRepository) FindUsersByEmail(email string) (*dto.FindUsersByEmailDTO, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+func (r *userRepository) FindUsersByEmail(email string) (*dto.FindUsersDTO, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	var user dto.FindUsersByEmailDTO
+	var user dto.FindUsersDTO
 
 	query := `SELECT id, name, email, password, created_at FROM users WHERE email = $1`
 	err := r.db.QueryRowContext(ctx,
@@ -124,4 +124,73 @@ func (r *userRepository) FindUsersByEmail(email string) (*dto.FindUsersByEmailDT
 	}
 
 	return &user, nil
+}
+
+func (r *userRepository) FindUsersByID(id string) (*dto.FindUsersDTO, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	var user dto.FindUsersDTO
+
+	query := `SELECT id, name, email, created_at FROM users WHERE id = $1`
+	err := r.db.QueryRowContext(ctx,
+		query,
+		id,
+	).Scan(&user.ID, &user.Name, &user.Email, &user.CreatedAt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (r *userRepository) UpdateUser(id string, user *dto.UpdateUserDTO) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	// db begin transaction
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	// query
+	query := `UPDATE users SET name = $1, email = $2, updated_at = $3 WHERE id = $4`
+	_, err = tx.ExecContext(ctx, query, user.Name, user.Email, user.UpdatedAt, id)
+	if err != nil {
+		err = tx.Rollback()
+		if err != nil {
+			return err
+		}
+		return err
+	}
+
+	// commit transaction
+	return tx.Commit()
+}
+
+func (r *userRepository) DeleteUser(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	// db begin transaction
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	// query
+	query := `DELETE FROM users WHERE id = $1`
+	_, err = tx.ExecContext(ctx, query, id)
+	if err != nil {
+		err = tx.Rollback()
+		if err != nil {
+			return err
+		}
+		return err
+	}
+
+	// commit transaction
+	return tx.Commit()
 }

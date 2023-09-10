@@ -46,11 +46,50 @@ func (s *UserService) InsertUser(user *dto.InsertUserDTO) error {
 	return nil
 }
 
-func (s *UserService) FindUsersByEmail(email string) (*dto.FindUsersByEmailDTO, error) {
+func (s *UserService) FindUsersByEmail(email string) (*dto.FindUsersDTO, error) {
 	user, err := s.userRepo.FindUsersByEmail(email)
 	if err != nil {
 		return nil, err
 	}
 
 	return user, nil
+}
+
+func (s *UserService) FindUsersByID(id string) (*dto.FindUsersDTO, error) {
+	user, err := s.userRepo.FindUsersByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (s *UserService) UpdateUser(id string, user *dto.UpdateUserDTO) error {
+	// check user
+	_, err := s.userRepo.FindUsersByID(id)
+	if err != nil {
+		return err
+	}
+
+	err = s.userRepo.UpdateUser(id, user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *UserService) DeleteUser(id string) error {
+	// check user
+	_, err := s.userRepo.FindUsersByID(id)
+	if err != nil {
+		return err
+	}
+
+	err = s.userRepo.DeleteUser(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

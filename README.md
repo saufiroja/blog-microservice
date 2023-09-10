@@ -30,8 +30,8 @@ Implementation Microservice in Golang
 - [ ] User Service
   - [x] Find All Users
   - [ ] Find User By ID
-  - [ ] Find User By Email
-  - [ ] Insert User
+  - [x] Find User By Email
+  - [x] Insert User
   - [ ] Update User
   - [ ] Delete User
 - [ ] Post Service

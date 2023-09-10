@@ -30,13 +30,13 @@ func NewUserServerClient() UserServerClient {
 	}
 }
 
-func (c *UserServerClient) InsertUser(req *user.InsertUserDTO) (*user.InsertUserResponse, error) {
+func (c *UserServerClient) InsertUser(req *user.InsertUserDTO) (*user.UserResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	return c.UserClient.InsertUser(ctx, req)
 }
 
-func (c *UserServerClient) FindUsersByEmail(req *user.FindUsersByEmailRequest) (*user.FindUsersByEmailResponse, error) {
+func (c *UserServerClient) FindUsersByEmail(req *user.FindUsersByEmailRequest) (*user.FindUsersResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	return c.UserClient.FindUsersByEmail(ctx, req)

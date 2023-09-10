@@ -29,11 +29,11 @@ Implementation Microservice in Golang
   - [ ] Get my profile
 - [ ] User Service
   - [x] Find All Users
-  - [ ] Find User By ID
+  - [x] Find User By ID
   - [x] Find User By Email
   - [x] Insert User
-  - [ ] Update User
-  - [ ] Delete User
+  - [x] Update User
+  - [x] Delete User
 - [ ] Post Service
   - [ ] Insert Post
   - [ ] Update Post

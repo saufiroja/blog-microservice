@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/saufiroja/blog-microservice/auth-service/infrastructures/grpc/client"
@@ -30,7 +29,6 @@ func (h *AuthHandler) Register(ctx context.Context, req *auth.RegisterRequest) (
 		CreatedAt: req.CreatedAt,
 		UpdatedAt: req.UpdatedAt,
 	}
-	fmt.Println(input)
 	_, err := h.UserClient.InsertUser(input)
 	if err != nil {
 		return nil, err

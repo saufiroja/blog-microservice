@@ -31,7 +31,6 @@ func NewUserServerClient() UserServerClient {
 }
 
 func (c *UserServerClient) InsertUser(req *user.InsertUserDTO) (*user.InsertUserResponse, error) {
-	fmt.Println(req)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	return c.UserClient.InsertUser(ctx, req)

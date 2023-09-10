@@ -1,1 +1,58 @@
 version: '3.8'
+
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - '50052:50052'
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5435
+      - DB_USER=user
+      - DB_PASS=password
+      - DB_NAME=db
+      - GO_ENV=development
+      - USER_PORT=50052
+      - USER_HOST=user-service
+    networks:
+      - my-network
+  auth-service:
+    build: ./auth-service
+    ports:
+      - '50051:50051'
+    environment:
+      - GO_ENV=development
+      - USER_PORT=50052
+      - USER_HOST=user-service
+      - AUTH_PORT=50051
+      - AUTH_HOST=auth-service
+    networks:
+      - my-network
+
+  nginx:
+    build: ./nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - user-service
+      - auth-service
+    networks:
+      - my-network
+
+  postgres:
+    image: postgres:15
+    ports:
+      - '5435:5432'
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - my-network
+volumes:
+  postgres:
+networks:
+  my-network:
+    driver: bridge

@@ -21,8 +21,8 @@ Implementation Microservice in Golang
 ## Features
 
 - [ ] Auth Service
-  - [ ] Register
-  - [ ] Login
+  - [x] Register
+  - [x] Login
   - [ ] Logout
   - [ ] Refresh Token
   - [ ] Verify Email

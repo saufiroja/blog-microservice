@@ -106,3 +106,22 @@ func (r *userRepository) InsertUser(user *dto.InsertUserDTO) error {
 	// commit transaction
 	return tx.Commit()
 }
+
+func (r *userRepository) FindUsersByEmail(email string) (*dto.FindUsersByEmailDTO, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var user dto.FindUsersByEmailDTO
+
+	query := `SELECT id, name, email, password, created_at FROM users WHERE email = $1`
+	err := r.db.QueryRowContext(ctx,
+		query,
+		email,
+	).Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedAt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}

@@ -45,3 +45,12 @@ func (s *UserService) InsertUser(user *dto.InsertUserDTO) error {
 
 	return nil
 }
+
+func (s *UserService) FindUsersByEmail(email string) (*dto.FindUsersByEmailDTO, error) {
+	user, err := s.userRepo.FindUsersByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}

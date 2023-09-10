@@ -3,14 +3,14 @@ package handler
 import (
 	"context"
 
-	"github.com/saufiroja/blog-microservice/user-service/infrastructures/grpc/rpc/pb/user"
+	pb "github.com/saufiroja/blog-microservice/user-service/infrastructures/grpc/rpc/pb/user"
 	"github.com/saufiroja/blog-microservice/user-service/interfaces"
 	"github.com/saufiroja/blog-microservice/user-service/models/dto"
 	"github.com/saufiroja/blog-microservice/user-service/utils"
 )
 
 type UserHandler struct {
-	user.UnimplementedUserServiceServer
+	pb.UnimplementedUserServiceServer
 	userService interfaces.UserService
 }
 
@@ -20,7 +20,7 @@ func NewUserHandler(userService interfaces.UserService) *UserHandler {
 	}
 }
 
-func (h *UserHandler) FindAllUsers(ctx context.Context, req *user.PaginationRequest) (*user.FindAllUsersResponse, error) {
+func (h *UserHandler) FindAllUsers(ctx context.Context, req *pb.PaginationRequest) (*pb.FindAllUsersResponse, error) {
 	// set pagination
 	setPage := utils.SetPagination(req)
 
@@ -31,7 +31,7 @@ func (h *UserHandler) FindAllUsers(ctx context.Context, req *user.PaginationRequ
 	}
 
 	// convert pagination
-	paginationRes := &user.Pagination{
+	paginationRes := &pb.Pagination{
 		Limit:     page.Limit,
 		Page:      page.Page,
 		TotalData: page.TotalData,
@@ -39,9 +39,9 @@ func (h *UserHandler) FindAllUsers(ctx context.Context, req *user.PaginationRequ
 	}
 
 	// convert response
-	var usersRes []*user.FindAllUsersDTO
+	var usersRes []*pb.FindAllUsersDTO
 	for _, v := range users {
-		userRes := &user.FindAllUsersDTO{
+		userRes := &pb.FindAllUsersDTO{
 			Id:        v.ID,
 			Name:      v.Name,
 			Email:     v.Email,
@@ -51,7 +51,7 @@ func (h *UserHandler) FindAllUsers(ctx context.Context, req *user.PaginationRequ
 	}
 
 	// send response
-	res := user.FindAllUsersResponse{
+	res := pb.FindAllUsersResponse{
 		Code:       200,
 		Message:    "success find all users",
 		Pagination: paginationRes,
@@ -61,7 +61,7 @@ func (h *UserHandler) FindAllUsers(ctx context.Context, req *user.PaginationRequ
 	return &res, nil
 }
 
-func (h *UserHandler) InsertUser(ctx context.Context, req *user.InsertUserDTO) (*user.InsertUserResponse, error) {
+func (h *UserHandler) InsertUser(ctx context.Context, req *pb.InsertUserDTO) (*pb.InsertUserResponse, error) {
 	// convert request
 	userReq := &dto.InsertUserDTO{
 		Name:      req.Name,
@@ -78,9 +78,35 @@ func (h *UserHandler) InsertUser(ctx context.Context, req *user.InsertUserDTO) (
 	}
 
 	// send response
-	res := user.InsertUserResponse{
+	res := pb.InsertUserResponse{
 		Code:    201,
 		Message: "success insert user",
+	}
+
+	return &res, nil
+}
+
+func (h *UserHandler) FindUsersByEmail(ctx context.Context, req *pb.FindUsersByEmailRequest) (*pb.FindUsersByEmailResponse, error) {
+	// call service
+	user, err := h.userService.FindUsersByEmail(req.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	// convert response
+	userRes := &pb.FindUsersByEmailDTO{
+		Id:        user.ID,
+		Name:      user.Name,
+		Email:     user.Email,
+		Password:  user.Password,
+		CreatedAt: user.CreatedAt,
+	}
+
+	// send response
+	res := pb.FindUsersByEmailResponse{
+		Code:    200,
+		Message: "success find user by email",
+		Result:  userRes,
 	}
 
 	return &res, nil

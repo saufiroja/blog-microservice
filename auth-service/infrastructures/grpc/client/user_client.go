@@ -35,3 +35,9 @@ func (c *UserServerClient) InsertUser(req *user.InsertUserDTO) (*user.InsertUser
 	defer cancel()
 	return c.UserClient.InsertUser(ctx, req)
 }
+
+func (c *UserServerClient) FindUsersByEmail(req *user.FindUsersByEmailRequest) (*user.FindUsersByEmailResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	return c.UserClient.FindUsersByEmail(ctx, req)
+}

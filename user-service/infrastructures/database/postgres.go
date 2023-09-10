@@ -24,11 +24,11 @@ func NewPostgres(conf *config.AppConfig) *sql.DB {
 		panic(err)
 	}
 
-	// // ping
-	// err = db.Ping()
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// ping
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
 
 	// connection pool
 	db.SetMaxIdleConns(10)

@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/saufiroja/blog-microservice/auth-service/infrastructures/grpc/client"
 	"github.com/saufiroja/blog-microservice/auth-service/infrastructures/grpc/handler"
+	"github.com/saufiroja/blog-microservice/auth-service/service"
 	"github.com/saufiroja/blog-microservice/auth-service/utils"
 )
 
@@ -19,7 +20,9 @@ func (rpc *GrpcServer) provide() gRPCProvider {
 	bcrypt := utils.NewPassword()
 	token := utils.NewGenerateToken()
 
-	provider.handlers.auth = *handler.NewAuthHandler(&userClient, bcrypt, token)
+	authService := service.NewAuthService(&userClient, bcrypt, token)
+
+	provider.handlers.auth = *handler.NewAuthHandler(authService)
 
 	return provider
 }

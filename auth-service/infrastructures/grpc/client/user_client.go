@@ -41,3 +41,9 @@ func (c *UserServerClient) FindUsersByEmail(req *user.FindUsersByEmailRequest) (
 	defer cancel()
 	return c.UserClient.FindUsersByEmail(ctx, req)
 }
+
+func (c *UserServerClient) FindUserByID(req *user.FindUsersByIDRequest) (*user.FindUsersResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	return c.UserClient.FindUsersByID(ctx, req)
+}
